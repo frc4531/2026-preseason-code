@@ -9,12 +9,12 @@ class HopperOut(commands2.Command):
         super().__init__()
 
         self.hopper_sub = hopper_sub
-        self.addRequirements(self.hopper_sub)
+        self.add_requirements(self.hopper_sub)
 
     def execute(self) -> None:
         self.hopper_sub.set_hopper_speed(0.9)
 
-    def isFinished(self) -> bool:
+    def is_finished(self) -> bool:
         return False
 
     def end(self, interrupted: bool) -> None:

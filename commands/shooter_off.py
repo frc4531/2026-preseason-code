@@ -9,12 +9,12 @@ class ShooterOff(commands2.Command):
         super().__init__()
 
         self.shooter_sub = shooter_sub
-        self.addRequirements(self.shooter_sub)
+        self.add_requirements(self.shooter_sub)
 
     def execute(self) -> None:
         self.shooter_sub.set_shooter_speed(0)
 
-    def isFinished(self) -> bool:
+    def is_finished(self) -> bool:
         return False
 
     def end(self, interrupted: bool) -> None:

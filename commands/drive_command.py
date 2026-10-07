@@ -15,11 +15,11 @@ class DriveCommand(commands2.Command):
 
         self.driver_controller = wpilib.Joystick(0)
         self.drive_sub = drive_sub
-        self.addRequirements(self.drive_sub)
+        self.add_requirements(self.drive_sub)
 
     def execute(self) -> None:
-        forward = self.driver_controller.getY()
-        strafe = self.driver_controller.getX()
+        forward = self.driver_controller.get_y()
+        strafe = self.driver_controller.get_x()
 
         gyro_degrees = self.drive_sub.get_heading()
         gyro_radians = gyro_degrees * math.pi/180
@@ -28,18 +28,18 @@ class DriveCommand(commands2.Command):
         fwd = temp
 
         self.drive_sub.drive(
-            wpimath.applyDeadband(
-                (-self.driver_controller.getY() * math.cos(self.drive_sub.get_heading() * (math.pi / 180))) +
-                (self.driver_controller.getX() * math.sin(self.drive_sub.get_heading() * (math.pi / 180))),
+            wpimath.apply_deadband(
+                (-self.driver_controller.get_y() * math.cos(self.drive_sub.get_heading() * (math.pi / 180))) +
+                (self.driver_controller.get_x() * math.sin(self.drive_sub.get_heading() * (math.pi / 180))),
                 OIConstants.kDriveDeadband
             ),
-            -wpimath.applyDeadband(
-                (self.driver_controller.getY() * math.sin(self.drive_sub.get_heading() * (math.pi / 180))) +
-                (self.driver_controller.getX() * math.cos(self.drive_sub.get_heading() * (math.pi / 180))),
+            -wpimath.apply_deadband(
+                (self.driver_controller.get_y() * math.sin(self.drive_sub.get_heading() * (math.pi / 180))) +
+                (self.driver_controller.get_x() * math.cos(self.drive_sub.get_heading() * (math.pi / 180))),
                 OIConstants.kDriveDeadband
             ),
-            -wpimath.applyDeadband(
-                self.driver_controller.getZ(), OIConstants.kDriveDeadband
+            -wpimath.apply_deadband(
+                self.driver_controller.get_z(), OIConstants.kDriveDeadband
             ),
             False,
             False,
@@ -65,7 +65,7 @@ class DriveCommand(commands2.Command):
         #     False,
         # )
 
-    def isFinished(self) -> bool:
+    def is_finished(self) -> bool:
         return False
 
     def end(self, interrupted: bool) -> None:

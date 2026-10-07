@@ -2,10 +2,9 @@ import math
 
 import commands2
 import rev
-from rev import SparkFlexConfig, SparkBase
 
 from subsystems.turret_subsystem import TurretSubsystem
-from wpimath.controller import PIDController
+from wpimath import PIDController
 
 import ntcore
 from wpilib import DriverStation
@@ -23,7 +22,7 @@ class TrackGoal(commands2.Command):
         self.vision_sub = vision_sub
 
         self.turret_sub = turret_sub
-        self.addRequirements(self.turret_sub, self.vision_sub)
+        self.add_requirements(self.turret_sub, self.vision_sub)
 
         self.turret_pid_controller = PIDController(0.05, 0, 0)
         self.hood_controller = self.turret_sub.hood_pid_controller
@@ -40,22 +39,22 @@ class TrackGoal(commands2.Command):
         self.encoder_range = abs(self.far_encoder - self.close_encoder)
         self.cam_angle_ratio = self.encoder_range / self.distance_range
 
-        nt_instance = ntcore.NetworkTableInstance.getDefault()
-        turret_table = nt_instance.getTable("turret_table")
-        tracking_table = nt_instance.getTable("tracking_table")
-        state_table = nt_instance.getTable("state_table")
+        nt_instance = ntcore.NetworkTableInstance.get_default()
+        turret_table = nt_instance.get_table("turret_table")
+        tracking_table = nt_instance.get_table("tracking_table")
+        state_table = nt_instance.get_table("state_table")
 
-        self.current_relative_output_position_entry = turret_table.getDoubleTopic("cur_rel_angle").publish()
-        self.turret_pid_output_entry = turret_table.getDoubleTopic("turret_pid_output").publish()
+        self.current_relative_output_position_entry = turret_table.get_double_topic("cur_rel_angle").publish()
+        self.turret_pid_output_entry = turret_table.get_double_topic("turret_pid_output").publish()
 
-        self.distance_entry = tracking_table.getDoubleTopic("distance_entry").publish()
-        self.target_position_entry = tracking_table.getDoubleTopic("target_position_entry").publish()
-        self.target_encoder_entry = tracking_table.getDoubleTopic("target_encoder_entry").publish()
+        self.distance_entry = tracking_table.get_double_topic("distance_entry").publish()
+        self.target_position_entry = tracking_table.get_double_topic("target_position_entry").publish()
+        self.target_encoder_entry = tracking_table.get_double_topic("target_encoder_entry").publish()
 
-        self.is_tracking_state = state_table.getDoubleTopic("is_tracking").publish()
+        self.is_tracking_state = state_table.get_double_topic("is_tracking").publish()
 
     def initialize(self) -> None:
-        ally = DriverStation.getAlliance() # DriverStation.getAlliance()
+        ally = DriverStation.get_alliance() # DriverStation.getAlliance()
         if ally is not None:
             if ally == DriverStation.Alliance.kRed:
                 self.target_x_coord = 11.875 #4.035
@@ -79,7 +78,7 @@ class TrackGoal(commands2.Command):
         if 0 <= relative_angle <= 270:
             target_encoder_position = (relative_angle / 270) * 140
 
-            self.turret_sub.turret_pid_controller.setReference(target_encoder_position, rev.SparkBase.ControlType.kPosition)
+            self.turret_sub.turret_pid_controller.setReference(target_encoder_position, rev.SparkBase.ControlType.POSITION)
 
         # Hood (distance) Control Block
 
@@ -89,13 +88,13 @@ class TrackGoal(commands2.Command):
         if self.close_distance < current_distance < self.far_distance:
             target_encoder = -((((current_distance - self.close_distance) * self.encoder_range) / self.distance_range) + self.close_encoder)
             target_position = (max(self.far_encoder, min(self.close_encoder, target_encoder)))
-            self.hood_controller.setReference(target_position, rev.SparkBase.ControlType.kPosition)
+            self.hood_controller.setReference(target_position, rev.SparkBase.ControlType.POSITION)
         elif current_distance < self.close_distance:
             target_position = self.close_encoder
-            self.hood_controller.setReference(target_position, rev.SparkBase.ControlType.kPosition)
+            self.hood_controller.setReference(target_position, rev.SparkBase.ControlType.POSITION)
         elif current_distance > self.far_distance:
             target_position = self.far_encoder
-            self.hood_controller.setReference(target_position, rev.SparkBase.ControlType.kPosition)
+            self.hood_controller.setReference(target_position, rev.SparkBase.ControlType.POSITION)
         else:
             self.turret_sub.set_hood_speed(0)
 

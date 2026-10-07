@@ -1,6 +1,5 @@
 import commands2
-import wpilib
-import wpimath.controller
+from wpimath import PIDController
 
 from subsystems.extension_subsystem import ExtensionSubsystem
 
@@ -9,7 +8,7 @@ class ExtensionToPosition(commands2.PIDCommand):
 
     def __init__(self, extension_sub: ExtensionSubsystem, target_position) -> None:
         super().__init__(
-            wpimath.controller.PIDController(1.75, 0, 0),
+            PIDController(1.75, 0, 0),
             # Close loop on absolute encoder
             lambda: extension_sub.get_extension_position(),
             # Set reference to target
@@ -23,5 +22,5 @@ class ExtensionToPosition(commands2.PIDCommand):
     def initialize(self) -> None:
         self.getController().enableContinuousInput(0, 1)
 
-    def isFinished(self) -> bool:
+    def is_finished(self) -> bool:
         return False

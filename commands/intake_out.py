@@ -9,12 +9,12 @@ class IntakeOut(commands2.Command):
         super().__init__()
 
         self.intake_sub = intake_sub
-        self.addRequirements(self.intake_sub)
+        self.add_requirements(self.intake_sub)
 
     def execute(self) -> None:
         self.intake_sub.set_intake_speed(-0.9)
 
-    def isFinished(self) -> bool:
+    def is_finished(self) -> bool:
         return False
 
     def end(self, interrupted: bool) -> None:

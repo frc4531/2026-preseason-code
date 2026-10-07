@@ -1,11 +1,9 @@
 import math
 
 import commands2
-import rev
-from rev import SparkFlexConfig, SparkBase
+from wpimath import PIDController
 
 from subsystems.drive_subsystem import DriveSubsystem
-from wpimath.controller import PIDController
 
 import ntcore
 
@@ -32,26 +30,26 @@ class DriveToEncoderPos(commands2.Command):
 
         self.drive_sub = drive_sub
 
-        self.addRequirements(self.drive_sub)
+        self.add_requirements(self.drive_sub)
 
         self.x_drive_pid_controller = PIDController(0.2, 0, 0)
         self.y_drive_pid_controller = PIDController(0.2, 0, 0)
         self.rot_pid_controller = PIDController(0.04, 0, 0)
-        self.rot_pid_controller.enableContinuousInput(-180, 180)
+        self.rot_pid_controller.enable_continuous_input(-180, 180)
 
-        self.x_drive_pid_controller.setTolerance(target_threshold)
-        self.x_drive_pid_controller.setTolerance(target_threshold)
+        self.x_drive_pid_controller.set_tolerance(target_threshold)
+        self.x_drive_pid_controller.set_tolerance(target_threshold)
 
-        nt_instance = ntcore.NetworkTableInstance.getDefault()
-        drive_table = nt_instance.getTable("drive_table")
+        nt_instance = ntcore.NetworkTableInstance.get_default()
+        drive_table = nt_instance.get_table("drive_table")
 
-        self.target_distance_entry = drive_table.getDoubleTopic("target_distance").publish()
+        self.target_distance_entry = drive_table.get_double_topic("target_distance").publish()
 
     def initialize(self):
         # self.drive_sub.reset_encoders()
         self.initial_reading = self.drive_sub.front_left.get_position().distance_ft
 
-        self.rot_pid_controller.setSetpoint(self.target_angle)
+        self.rot_pid_controller.set_setpoint(self.target_angle)
 
     def execute(self) -> None:
         self.current_reading = self.drive_sub.front_left.get_position().distance_ft

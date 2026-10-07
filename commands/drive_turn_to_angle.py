@@ -1,6 +1,5 @@
 import commands2
-import wpilib
-import wpimath.controller
+from wpimath import PIDController
 
 from subsystems.drive_subsystem import DriveSubsystem
 
@@ -10,7 +9,7 @@ class DriveTurnToAngle(commands2.PIDCommand):
 
     def __init__(self, drive_sub: DriveSubsystem, target_angle: float) -> None:
         super().__init__(
-            wpimath.controller.PIDController(0.03, 0, 0),
+            PIDController(0.03, 0, 0),
             # Close loop on absolute encoder
             lambda: drive_sub.get_heading(),
             # Set reference to target
@@ -26,5 +25,5 @@ class DriveTurnToAngle(commands2.PIDCommand):
         self.getController().setTolerance(0.5)
         self.getController().enableContinuousInput(-180, 180)
 
-    def isFinished(self) -> bool:
+    def is_finished(self) -> bool:
         return False

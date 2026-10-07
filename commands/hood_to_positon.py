@@ -13,12 +13,12 @@ class HoodToPosition(commands2.Command):
         self.target_position = target_position
 
         self.turret_sub = turret_sub
-        self.addRequirements(self.turret_sub)
+        self.add_requirements(self.turret_sub)
 
     def execute(self) -> None:
-        self.turret_sub.hood_pid_controller.setReference(self.target_position, rev.SparkBase.ControlType.kPosition)
+        self.turret_sub.hood_pid_controller.setReference(self.target_position, rev.SparkBase.ControlType.POSITION)
 
-    def isFinished(self) -> bool:
+    def is_finished(self) -> bool:
         return False
 
     def end(self, interrupted: bool) -> None:

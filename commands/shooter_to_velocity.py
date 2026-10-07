@@ -14,12 +14,12 @@ class ShooterToVelocity(commands2.Command):
         self.target_position = target_position
 
         self.shooter_sub = shooter_sub
-        self.addRequirements(self.shooter_sub)
-        nt_instance = ntcore.NetworkTableInstance.getDefault()
-        shoot_table = nt_instance.getTable("shoot_table")
+        self.add_requirements(self.shooter_sub)
+        nt_instance = ntcore.NetworkTableInstance.get_default()
+        shoot_table = nt_instance.get_table("shoot_table")
 
-        self.far_shoot = shoot_table.getDoubleTopic("far_shoot").publish()
-        self.near_shoot = shoot_table.getDoubleTopic("near_shoot").publish()
+        self.far_shoot = shoot_table.get_double_topic("far_shoot").publish()
+        self.near_shoot = shoot_table.get_double_topic("near_shoot").publish()
         #self.target_position = shoot_table.getDoubleTopic("velocity").publish()
 
 
@@ -32,7 +32,7 @@ class ShooterToVelocity(commands2.Command):
             self.near_shoot.set(True)
             self.far_shoot.set(False)
 
-    def isFinished(self) -> bool:
+    def is_finished(self) -> bool:
         return False
 
     def end(self, interrupted: bool) -> None:
